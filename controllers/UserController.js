@@ -28,8 +28,11 @@ export const register = async (req, res) => {
     );
 
     const { passwordHash, ...userData } = user._doc;
-
-    res.json({
+  console.log({
+    ...userData,
+    token,
+  })
+    res.status(201).json({
       ...userData,
       token,
     });
@@ -74,10 +77,13 @@ export const login = async (req, res) => {
 
     const { passwordHash, ...userData } = user._doc;
 
+
     res.json({
       ...userData,
       token,
     });
+
+
   } catch (err) {
     console.log(err);
     res.status(500).json({

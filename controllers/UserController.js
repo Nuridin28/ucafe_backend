@@ -4,34 +4,32 @@ import UserModel from "../models/User.js";
 
 export const register = async (req, res) => {
   try {
-    const password = req.body.password;
+    const { email, fullName, avatarUrl, password } = req.body;
+
     const salt = await bcryptjs.genSalt(10);
     const hash = await bcryptjs.hash(password, salt);
 
     const doc = new UserModel({
-      email: req.body.email,
-      fullName: req.body.fullName,
-      avatarUrl: req.body.avatarUrl,
+      email,
+      fullName,
+      avatarUrl,
       passwordHash: hash,
+      role: req.body.role || "user",
     });
 
     const user = await doc.save();
 
     const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
-      }
+        {
+          _id: user._id,
+          role: user.role,
+        },
+        "secret123",
+        { expiresIn: "30d" }
     );
 
     const { passwordHash, ...userData } = user._doc;
-  console.log({
-    ...userData,
-    token,
-  })
+
     res.status(201).json({
       ...userData,
       token,
@@ -55,8 +53,8 @@ export const login = async (req, res) => {
     }
 
     const isValidPass = await bcryptjs.compare(
-      req.body.password,
-      user._doc.passwordHash
+        req.body.password,
+        user.passwordHash
     );
 
     if (!isValidPass) {
@@ -66,24 +64,20 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
-      }
+        {
+          _id: user._id,
+          role: user.role,
+        },
+        "secret123",
+        { expiresIn: "30d" }
     );
 
     const { passwordHash, ...userData } = user._doc;
-
 
     res.json({
       ...userData,
       token,
     });
-
-
   } catch (err) {
     console.log(err);
     res.status(500).json({

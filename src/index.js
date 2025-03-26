@@ -5,6 +5,9 @@ import { registerValidation } from "../validations/validations.js";
 import * as UserController from "../controllers/UserController.js";
 import checkAuth from "../middlewares/checkAuth.js";
 import cors from "cors";
+import orderRoutes from '../routes/orders.js'
+import cafeRoutes from "../routes/cafes.js";
+import foodItemRoutes from '../routes/foodItems.js'
 
 configDotenv();
 
@@ -32,3 +35,7 @@ app.get("/", (req, res) => {
 app.get("/users", async (req, res) => {
   res.json({ data: "users" });
 });
+
+app.use("/orders", orderRoutes);
+app.use("/cafes", cafeRoutes);
+app.use('/food-items', foodItemRoutes)

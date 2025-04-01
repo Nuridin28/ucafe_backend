@@ -4,11 +4,14 @@ import {
   deleteCafe,
   updateCafe,
   getAllCafes,
+  getCafeById,
 } from "../controllers/cafeController.js";
 import checkAuth from "../middlewares/checkAuth.js";
 const router = express.Router();
 
 router.get("/", getAllCafes);
+
+router.get("/:id", getCafeById);
 
 router.post("/", checkAuth, createCafe);
 

@@ -41,24 +41,27 @@ export const createOrder = async (req, res) => {
   try {
     const { cafe, items } = req.body;
 
-    const totalPrice = items.reduce((acc, item) => {
-      return acc + item.price * item.quantity;
-    }, 0);
+    if (!cafe || !items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Некорректные данные заказа" });
+    }
 
-    const doc = new OrderModel({
+    const totalPrice = items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+
+    const order = new OrderModel({
       user: req.userId,
       cafe,
       items,
       totalPrice,
     });
 
-    const order = await doc.save();
+    await order.save();
     res.status(201).json(order);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Не удалось создать заказ",
-    });
+    console.error(err);
+    res.status(500).json({ message: "Не удалось создать заказ" });
   }
 };
 
@@ -113,6 +116,23 @@ export const deleteOrder = async (req, res) => {
     console.log(err);
     res.status(500).json({
       message: "Не удалось удалить заказ",
+    });
+  }
+};
+
+export const getCafeOrders = async (req, res) => {
+  try {
+    const cafeId = req.params.cafeId;
+    const orderStatus = req.params.orderStatus;
+    const newOrders = await OrderModel.find({
+      cafe: cafeId,
+      status: orderStatus,
+    });
+    res.status(200).json(newOrders);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось получить новые заказы",
     });
   }
 };

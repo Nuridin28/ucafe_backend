@@ -6,7 +6,7 @@ import {
   getAllOrders,
   getOrderById,
   getCafeOrders,
-} from "../controllers/orderController.js";
+} from "../controllers/OrderController.js";
 import checkAuth from "../middlewares/checkAuth.js";
 
 const router = express.Router();

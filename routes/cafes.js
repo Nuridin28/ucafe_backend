@@ -5,7 +5,7 @@ import {
   updateCafe,
   getAllCafes,
   getCafeById,
-} from "../controllers/cafeController.js";
+} from "../controllers/CafeController.js";
 import checkAuth from "../middlewares/checkAuth.js";
 const router = express.Router();
 
